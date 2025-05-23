@@ -4,6 +4,5 @@ export const metadata = {
 
 export default function Devices(){
     return <div>
-        <p>devices</p>
     </div>
 }

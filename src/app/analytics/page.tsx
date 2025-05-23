@@ -4,6 +4,5 @@ export const metadata = {
 
 export default function Analytics(){
     return <div>
-        <p>analytics</p>
     </div>
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { ChartLine, Cpu, Fence, LayoutDashboard, ThermometerSun, Users } from "lucide-react";
+import { ChartLine, Cpu, Fence, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
 
 import {
   Sidebar,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import Link from "next/link";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -38,9 +39,9 @@ export function AppSidebar() {
     <Sidebar variant="inset">
       <SidebarHeader>
         <SidebarMenu>
-            <div className="flex gap-2 items-center cursor-default data-[slot=sidebar-menu-button]:!p-1.5">
+            <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:!p-1.5">
                 <Fence className="h-5 w-5" />
-                <span className="text-base font-semibold">My Garden</span>
+                <span className="text-base font-semibold">MyGarden</span>
             </div>
         </SidebarMenu>
       </SidebarHeader>
@@ -60,7 +61,7 @@ function CustomSidebarGroup({
   items,
 }: {
   title?: string;
-  items: { url: string; title: string; icon: any }[];
+  items: { url: string; title: string; icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> }[];
 }) {
   const pathname = usePathname(); // Get the current path
 

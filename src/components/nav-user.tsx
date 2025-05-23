@@ -1,11 +1,9 @@
 "use client"
 
 import {
-  BellIcon,
-  CreditCardIcon,
   LogOutIcon,
   MoreVerticalIcon,
-  UserCircleIcon,
+  UserIcon,
 } from "lucide-react"
 
 import {
@@ -16,10 +14,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -69,8 +64,12 @@ export function NavUser({
             sideOffset={4}
           >
             <DropdownMenuItem className="cursor-pointer">
-              <LogOutIcon />
-              Log out
+                <UserIcon />
+                <span>My Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+                <LogOutIcon />
+                <span>Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

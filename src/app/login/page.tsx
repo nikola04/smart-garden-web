@@ -51,69 +51,69 @@ function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onSubmit = async (data: LoginFormValues) => {
-    setIsSubmitting(true)
-    try {
-        
-    } catch (error) {
-      console.error("Login failed:", error)
-    } finally {
-      setIsSubmitting(false)
-    }
+        setIsSubmitting(true)
+        try {
+            console.log(data)
+        } catch (error) {
+            console.error("Login failed:", error)
+        } finally {
+            setIsSubmitting(false)
+        }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="email"
-          rules={{
-            required: "Email is required",
-            pattern: {
-              value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/,
-              message: "Invalid email address",
-            },
-          }}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  {...field}
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+            control={form.control}
+            name="email"
+            rules={{
+                required: "Email is required",
+                pattern: {
+                value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/,
+                message: "Invalid email address",
+                },
+            }}
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                    <Input
+                    type="email"
+                    placeholder="you@example.com"
+                    {...field}
+                    disabled={isSubmitting}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
 
-        <FormField
-          control={form.control}
-          name="password"
-          rules={{ required: "Password is required" }}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  {...field}
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+            control={form.control}
+            name="password"
+            rules={{ required: "Password is required" }}
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                    <Input
+                    type="password"
+                    placeholder="••••••••"
+                    {...field}
+                    disabled={isSubmitting}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting" : "Sign In"}
-        </Button>
-      </form>
-    </Form>
-  )
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting" : "Sign In"}
+            </Button>
+        </form>
+        </Form>
+    )
 }
