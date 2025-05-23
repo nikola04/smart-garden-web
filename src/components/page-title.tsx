@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const titles: Record<string, string> = {
-    "/dashboard": "Dashboard",
-    "/analytics": "Analytics",
-    "/family": "Family",
-    "/devices": "Devices",
-    "/sensors": "Sensors"
+    "/app": "Dashboard",
+    "/app/analytics": "Analytics",
+    "/app/family": "Family",
+    "/app/devices": "Devices",
+    "/app/sensors": "Sensors"
 };
 
 export default function PageTitle(){

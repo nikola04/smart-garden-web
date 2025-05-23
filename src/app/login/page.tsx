@@ -1,24 +1,15 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
+import { IUser } from "@/types/user"
+import { toast } from "sonner"
 
 type LoginFormValues = {
   email: string
@@ -26,24 +17,33 @@ type LoginFormValues = {
 }
 
 export default function LoginPage() {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-[400px] mx-4">
-        <CardHeader>
-          <CardTitle className="text-center">Welcome Back</CardTitle>
-          <CardDescription className="text-center">
-            Please sign in to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <LoginForm />
-        </CardContent>
-      </Card>
-    </div>
-  )
+    const { login, loggedIn } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (loggedIn) {
+            router.push("/app");
+        }
+    }, [loggedIn, router]);
+
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <Card className="w-full max-w-[400px] mx-4">
+            <CardHeader>
+            <CardTitle className="text-center">Welcome Back</CardTitle>
+            <CardDescription className="text-center">
+                Please sign in to your account
+            </CardDescription>
+            </CardHeader>
+            <CardContent>
+            <LoginForm login={login} />
+            </CardContent>
+        </Card>
+        </div>
+    )
 }
 
-function LoginForm() {
+function LoginForm({ login }: { login: (user: IUser, access: string, csrf: string) => void }) {
   const form = useForm<LoginFormValues>({
     defaultValues: { email: "", password: "" },
     mode: "onSubmit",
@@ -53,11 +53,26 @@ function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
         setIsSubmitting(true)
         try {
-            console.log(data)
+            await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            }).then((res) => res.json())
+            .then((res) => {
+                const { success, message, data } = res;
+                if (!success)
+                    throw new Error(message);
+                const { user, accessToken, csrfToken } = data;
+                login(user, accessToken, csrfToken);
+            }).catch((error) => {
+                toast.error(error.message);
+            });
         } catch (error) {
-            console.error("Login failed:", error)
+            console.error("Login failed:", error);
         } finally {
-            setIsSubmitting(false)
+            setIsSubmitting(false);
         }
   }
 

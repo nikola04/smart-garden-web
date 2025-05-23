@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton"
+import { usePathname, useRouter } from "next/navigation";
 import { ChartLine, Cpu, Fence, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
 
 import {
@@ -17,43 +18,57 @@ import {
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import Link from "next/link";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { ForwardRefExoticComponent, RefAttributes, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 const items = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Analytics", url: "/analytics", icon: ChartLine },
-  { title: "Family", url: "/family", icon: Users },
+  { title: "Dashboard", url: "/app", icon: LayoutDashboard },
+  { title: "Analytics", url: "/app/analytics", icon: ChartLine },
+  { title: "Family", url: "/app/family", icon: Users },
 ];
 const gearItems = [
-  { title: "Devices", url: "/devices", icon: Cpu },
-  { title: "Sensors", url: "/sensors", icon: ThermometerSun },
+  { title: "Devices", url: "/app/devices", icon: Cpu },
+  { title: "Sensors", url: "/app/sensors", icon: ThermometerSun },
 ];
 
 export function AppSidebar() {
-  const user = {
-    email: "test@gmail.com",
-    name: "patak",
-    avatar: "",
-  };
-  return (
-    <Sidebar variant="inset">
-      <SidebarHeader>
-        <SidebarMenu>
-            <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:!p-1.5">
-                <Fence className="h-5 w-5" />
-                <span className="text-base font-semibold">MyGarden</span>
-            </div>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <CustomSidebarGroup items={items} />
-        <CustomSidebarGroup title="Gear" items={gearItems} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} />
-      </SidebarFooter>
-    </Sidebar>
-  );
+    const { user, loggedIn, loading } = useAuth();
+    const router = useRouter();
+    useEffect(() => {
+        if (!loggedIn && !loading) {
+            router.push("/login");
+        }
+    }, [loggedIn, loading, router]);
+
+    return <Sidebar variant="inset">
+        <SidebarHeader>
+            <SidebarMenu>
+                <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:!p-1.5">
+                    <Fence className="h-5 w-5" />
+                    <span className="text-base font-semibold">MyGarden</span>
+                </div>
+            </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+            <CustomSidebarGroup items={items} />
+            <CustomSidebarGroup title="Gear" items={gearItems} />
+        </SidebarContent>
+        <SidebarFooter>
+            { user != null ? <NavUser user={user} /> :
+                <SidebarMenu>
+                <SidebarMenuItem>
+                    <div className="flex items-center space-x-4 p-2">
+                        <Skeleton className="h-8 w-8 rounded-lg" />
+                        <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
+                            <Skeleton className="h-4 w-32" /> {/* Ime */}
+                            <Skeleton className="h-3 w-40" /> {/* Email */}
+                        </div>
+                    </div>
+                </SidebarMenuItem>
+                </SidebarMenu>
+            }
+        </SidebarFooter>
+    </Sidebar>;
 }
 
 function CustomSidebarGroup({
@@ -63,7 +78,7 @@ function CustomSidebarGroup({
   title?: string;
   items: { url: string; title: string; icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> }[];
 }) {
-  const pathname = usePathname(); // Get the current path
+  const pathname = usePathname();
 
   return (
     <SidebarGroup>
