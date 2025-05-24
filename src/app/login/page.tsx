@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form"
 import { cn } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
@@ -24,9 +23,8 @@ export default function LoginPage() {
     const router = useRouter();
 
     useEffect(() => {
-        if (loggedIn) {
+        if (loggedIn)
             router.push("/app");
-        }
     }, [loggedIn, router]);
 
     return (

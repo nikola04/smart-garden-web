@@ -2,20 +2,9 @@
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { usePathname, useRouter } from "next/navigation";
-import { ChartLine, Cpu, Fence, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
+import { ChartLine, Cpu, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes, useEffect } from "react";
