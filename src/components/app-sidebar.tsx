@@ -43,9 +43,8 @@ export function AppSidebar() {
     return <Sidebar variant="inset">
         <SidebarHeader>
             <SidebarMenu>
-                <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:!p-1.5">
-                    <Fence className="h-5 w-5" />
-                    <span className="text-base font-semibold">MyGarden</span>
+                <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:p-1.5!">
+                    <span className="text-lg font-black">MyGarden</span>
                 </div>
             </SidebarMenu>
         </SidebarHeader>
@@ -60,8 +59,8 @@ export function AppSidebar() {
                     <div className="flex items-center space-x-4 p-2">
                         <Skeleton className="h-8 w-8 rounded-lg" />
                         <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
-                            <Skeleton className="h-4 w-32" /> {/* Ime */}
-                            <Skeleton className="h-3 w-40" /> {/* Email */}
+                            <Skeleton className="h-4 w-32" />
+                            <Skeleton className="h-3 w-40" />
                         </div>
                     </div>
                 </SidebarMenuItem>
@@ -89,7 +88,7 @@ function CustomSidebarGroup({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild
-                className={pathname === item.url ? "!bg-primary !text-white" : ""}
+                isActive={pathname === item.url}
               >
                 <Link href={item.url}>
                   <item.icon />
