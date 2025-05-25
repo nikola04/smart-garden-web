@@ -1,36 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./use-auth"
-import { toast } from "sonner";
 import { IAPIKey } from "@/types/apikey";
+import { getAPIKey } from "@/services/apikey";
 
 export const useKey = (deviceId: string) => {
     const { loggedIn, loading: authLoading, user } = useAuth();
     const [loading, setLoading] = useState<boolean>(true);
-    const [key, setKey] = useState<IAPIKey|null>(null);
+    const [keys, setKeys] = useState<IAPIKey[]>([]);
 
-    const fetchKey = useCallback(async () => {
+    const fetchKeys = useCallback(async () => {
         if(user == null) return;
-        const csrfToken = localStorage.getItem('csrfToken');
         try {
             setLoading(true);
-            const response = await fetch(`/api/device/${deviceId}/key?csrf=${csrfToken}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                },
-            });
-            if (response.ok) {
-                const json = await response.json();
-                if(json?.data?.key) {
-                    const raw = json.data.key as IAPIKey;
-                    const key = ({ ...raw, expiresAt: raw.expiresAt != null ? new Date(raw.expiresAt) : null, createdAt: new Date(raw.createdAt) });
-                    setKey(key);
-                }else toast(json.message);
-            }else {
-                const json = await response.json();
-                toast(json.message);
-            }
+            const keys = await getAPIKey(deviceId);
+            setKeys(keys);
         } catch (err) {
             console.error(err);
         } finally{
@@ -42,11 +25,11 @@ export const useKey = (deviceId: string) => {
         if(authLoading) {
             setLoading(true);
         }else if(!authLoading && loggedIn){
-            fetchKey();
+            fetchKeys();
         }else if(!authLoading) {
             setLoading(false);
         }
-    }, [authLoading, loggedIn, fetchKey]);
+    }, [authLoading, loggedIn, fetchKeys]);
 
-    return ({ key, loading });
+    return ({ keys, loading });
 }
