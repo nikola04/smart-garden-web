@@ -2,9 +2,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
-import { Check, Copy, KeyRound, MonitorCog } from "lucide-react";
+import { Check, Copy, KeyRound, MonitorCog, Save, Trash2 } from "lucide-react";
 import { DeviceType, IDevice } from "@/types/device";
-import { useDevices } from "@/hooks/use-devices";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components//ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -16,51 +15,37 @@ import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 import { Skeleton } from "./ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { updateDevice } from "@/services/device";
+import { deleteDevice, updateDevice } from "@/services/device";
+import { isValidDeviceName } from "@/validators/device";
 
-export const DeviceList = () => {
-    const { devices, setDevices } = useDevices();
-
-    const handleRemove = (id: string) => {
-        console.log(`Remove device with ID: ${id}`);
-        // Add removal logic here
-    };
-    const handleEdit = (id: string) => {
-        console.log(`Edit device with ID: ${id}`);
-        // Add editing logic here
-    };
-    const updateDevice = useCallback((deviceId: string, name: string, type: DeviceType) => {
-        setDevices((prev) => prev.map((device) => {
-            if(device.id === deviceId) return ({ ...device, name, type });
-            return device;
-        }));
-    }, [setDevices]);
-
+export const DeviceList = ({ devices, updateDevice, deleteDevice }: {
+    devices: IDevice[];
+    updateDevice: (deviceId: string, name: string, type: DeviceType) => void;
+    deleteDevice: (deviceId: string) => void;
+}) => {
     return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
         {devices.map((device) => (
             <DeviceCard
                 key={device.id}
                 device={device}
-                onRemove={() => handleRemove(device.id)}
-                onEdit={() => handleEdit(device.id)}
                 onUpdate={(name: string, type: DeviceType) => updateDevice(device.id, name, type)}
+                onDelete={() => deleteDevice(device.id)}
             />
         ))}
     </div>;
 };
 
-const DeviceCard = ({ device, onUpdate }: {
+const DeviceCard = ({ device, onUpdate, onDelete }: {
     device: IDevice;
-    onRemove: () => void;
-    onEdit: () => void;
     onUpdate: (name: string, type: DeviceType) => void;
+    onDelete: () => void;
 }) => {
     return <Card key={device.id} className="gap-4">
         <CardHeader className="flex justify-between items-center">
             <CardTitle className="font-medium truncate max-w-[200px]">{device.name}</CardTitle>
             <div className="flex items-center gap-2">
                 <APIKeySheet device={device} />
-                <DeviceSheet device={device} onUpdate={onUpdate} />
+                <DeviceSheet device={device} onUpdate={onUpdate} onDelete={onDelete} />
             </div>
         </CardHeader>
         <CardContent>
@@ -70,19 +55,16 @@ const DeviceCard = ({ device, onUpdate }: {
     </Card>
 }
 
-const isValidDeviceName = (name: string): boolean => {
-    const nameRegex = /^[a-zA-Z0-9_.\-\s]{2,50}$/;
-    return nameRegex.test(name);
-};
-
-const DeviceSheet = ({ device, onUpdate }: {
+const DeviceSheet = ({ device, onUpdate, onDelete }: {
     device: IDevice;
     onUpdate: (name: string, type: DeviceType) => void;
+    onDelete: () => void;
 }) => {
     const [open, _setOpen] = useState(false);
-    const [name, setName] = useState(device.name);
+    const [_name, setName] = useState(device.name);
     const [type, setType] = useState(device.type);
 
+    const name = useMemo(() => _name.trim(), [_name]);
     const hasChanges = useMemo(() => name !== device.name || type !== device.type, [device, name, type]);
 
     const setOpen = useCallback((state: boolean) => {
@@ -92,11 +74,19 @@ const DeviceSheet = ({ device, onUpdate }: {
     }, [device]);
     const handleSave = useCallback(async () => {
         if(!hasChanges || !isValidDeviceName(name)) return;
+        setName(name);
         const updated = await updateDevice(device.id, name, type);
         if(updated == null) return;
         onUpdate(name, type);
         toast("Device saved successfully.");
     }, [device, name, type, hasChanges, onUpdate]);
+    const handleDelete = useCallback(async () => {
+        if(device == null) return;
+        await deleteDevice(device.id);
+        setOpen(false);
+        onDelete();
+        toast("Device deleted successfully.")
+    }, [device, onDelete, setOpen])
 
     return <Sheet open={open} onOpenChange={setOpen}>
         <Tooltip delayDuration={1000}>
@@ -122,7 +112,7 @@ const DeviceSheet = ({ device, onUpdate }: {
                     </div>
                     <div className="flex flex-col space-y-2">
                         <label htmlFor="device-name" className="text-sm font-medium">Device Name</label>
-                        <Input id="device-name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Input id="device-name" value={_name} onChange={(e) => setName(e.target.value)} />
                     </div>
                     <div className="flex flex-col space-y-2">
                         <label htmlFor="device-type" className="text-sm font-medium">Device Type</label>
@@ -140,9 +130,12 @@ const DeviceSheet = ({ device, onUpdate }: {
                         <p className="text-sm font-thin">{device.addedAt.toDateString()}</p>
                     </div>
                 </div>
-                <div className="flex justify-end mt-6 gap-2">
-                    <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSave} disabled={!hasChanges || !isValidDeviceName(name)}>Save</Button>
+                <div className="flex justify-between mt-6 gap-2">
+                    <DeviceDeleteContent onDelete={handleDelete}/>
+                    <div className="flex gap-2">
+                        <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button onClick={handleSave} disabled={!hasChanges || !isValidDeviceName(name)}><Save />Save</Button>
+                    </div>
                 </div>
             </SheetHeader>
         </SheetContent>
@@ -284,12 +277,32 @@ const KeyContent = ({ apiKey, keyValue, isCopied, onCopy }: {
     </>
 }
 
+const DeviceDeleteContent = ({ onDelete }: {
+    onDelete: () => void
+}) => {
+    return <AlertDialog>
+        <AlertDialogTrigger asChild>
+            <Button type="button" variant="secondary"><Trash2 />Delete</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>This action cannot be undone. This will permanently delete your device and key.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+}
+
 const KeyDeleteContent = ({ onDelete }: {
     onDelete: () => void
 }) => {
     return <AlertDialog>
         <AlertDialogTrigger asChild>
-            <Button className="ml-auto" type="button" variant="secondary">Delete</Button>
+            <Button className="ml-auto" type="button" variant="secondary"><Trash2 />Delete</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
             <AlertDialogHeader>

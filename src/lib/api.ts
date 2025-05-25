@@ -25,9 +25,9 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}, auth =
             toast(json.message);
             return null;
         }
-        return json.data;
+        return json.data ?? true;
     } catch(err) {
-        if(err instanceof Error)
+        if(err instanceof Error && err.name != "SyntaxError")
             toast(err.message);
         else toast("Unexpected error happened.");
         return null;

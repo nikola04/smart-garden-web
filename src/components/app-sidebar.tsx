@@ -22,12 +22,13 @@ const gearItems = [
 
 export function AppSidebar() {
     const { user, loggedIn, loading } = useAuth();
+    const path = usePathname();
     const router = useRouter();
     useEffect(() => {
         if (!loggedIn && !loading) {
-            router.push("/login");
+            router.push(`/login?redirect=${encodeURIComponent(path)}`);
         }
-    }, [loggedIn, loading, router]);
+    }, [loggedIn, loading, router, path]);
 
     return <Sidebar variant="inset">
         <SidebarHeader>
