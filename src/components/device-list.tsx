@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { Check, Copy, KeyRound, MonitorCog } from "lucide-react";
-import { IDevice } from "@/types/device";
+import { DeviceType, IDevice } from "@/types/device";
 import { useDevices } from "@/hooks/use-devices";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components//ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Label } from "./ui/label";
 import { IAPIKey } from "@/types/apikey";
 import { formatDate } from "@/utils/date";
@@ -15,18 +15,26 @@ import { deleteAPIKey, getAPIKey, registerAPIKey } from "@/services/apikey";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 import { Skeleton } from "./ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { updateDevice } from "@/services/device";
 
 export const DeviceList = () => {
-    const { devices } = useDevices();
+    const { devices, setDevices } = useDevices();
+
     const handleRemove = (id: string) => {
         console.log(`Remove device with ID: ${id}`);
         // Add removal logic here
     };
-
     const handleEdit = (id: string) => {
         console.log(`Edit device with ID: ${id}`);
         // Add editing logic here
     };
+    const updateDevice = useCallback((deviceId: string, name: string, type: DeviceType) => {
+        setDevices((prev) => prev.map((device) => {
+            if(device.id === deviceId) return ({ ...device, name, type });
+            return device;
+        }));
+    }, [setDevices]);
 
     return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
         {devices.map((device) => (
@@ -35,22 +43,24 @@ export const DeviceList = () => {
                 device={device}
                 onRemove={() => handleRemove(device.id)}
                 onEdit={() => handleEdit(device.id)}
+                onUpdate={(name: string, type: DeviceType) => updateDevice(device.id, name, type)}
             />
         ))}
     </div>;
 };
 
-const DeviceCard = ({ device }: {
-    device: IDevice,
-    onRemove: () => void,
-    onEdit: () => void
+const DeviceCard = ({ device, onUpdate }: {
+    device: IDevice;
+    onRemove: () => void;
+    onEdit: () => void;
+    onUpdate: (name: string, type: DeviceType) => void;
 }) => {
     return <Card key={device.id} className="gap-4">
         <CardHeader className="flex justify-between items-center">
-            <CardTitle className="font-bold truncate max-w-[200px]">{device.name}</CardTitle>
+            <CardTitle className="font-medium truncate max-w-[200px]">{device.name}</CardTitle>
             <div className="flex items-center gap-2">
                 <APIKeySheet device={device} />
-                <DeviceSheet device={device} />
+                <DeviceSheet device={device} onUpdate={onUpdate} />
             </div>
         </CardHeader>
         <CardContent>
@@ -60,10 +70,34 @@ const DeviceCard = ({ device }: {
     </Card>
 }
 
-const DeviceSheet = ({ device }: {
+const isValidDeviceName = (name: string): boolean => {
+    const nameRegex = /^[a-zA-Z0-9_.\-\s]{2,50}$/;
+    return nameRegex.test(name);
+};
+
+const DeviceSheet = ({ device, onUpdate }: {
     device: IDevice;
+    onUpdate: (name: string, type: DeviceType) => void;
 }) => {
-    const [open, setOpen] = useState(false);
+    const [open, _setOpen] = useState(false);
+    const [name, setName] = useState(device.name);
+    const [type, setType] = useState(device.type);
+
+    const hasChanges = useMemo(() => name !== device.name || type !== device.type, [device, name, type]);
+
+    const setOpen = useCallback((state: boolean) => {
+        setName(device.name);
+        setType(device.type);
+        _setOpen(state);
+    }, [device]);
+    const handleSave = useCallback(async () => {
+        if(!hasChanges || !isValidDeviceName(name)) return;
+        const updated = await updateDevice(device.id, name, type);
+        if(updated == null) return;
+        onUpdate(name, type);
+        toast("Device saved successfully.");
+    }, [device, name, type, hasChanges, onUpdate]);
+
     return <Sheet open={open} onOpenChange={setOpen}>
         <Tooltip delayDuration={1000}>
             <SheetTrigger asChild>
@@ -81,6 +115,35 @@ const DeviceSheet = ({ device }: {
             <SheetHeader>
                 <SheetTitle className="text-lg">Modify Device</SheetTitle>
                 <SheetDescription className="font-thin"></SheetDescription>
+                <div className="space-y-6 mt-4">
+                    <div className="flex flex-col gap-2">
+                        <p className="text-sm font-medium">ID</p>
+                        <p className="text-sm font-thin">{device.id}</p>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                        <label htmlFor="device-name" className="text-sm font-medium">Device Name</label>
+                        <Input id="device-name" value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                        <label htmlFor="device-type" className="text-sm font-medium">Device Type</label>
+                        <Select value={type} onValueChange={(value) => setType(value as typeof device.type)}>
+                            <SelectTrigger id="device-type">
+                                <SelectValue placeholder="Select a type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                { Object.values(DeviceType).map((value, key) => <SelectItem key={key} value={value}>{value}</SelectItem> )}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <p className="text-sm font-medium">Added</p>
+                        <p className="text-sm font-thin">{device.addedAt.toDateString()}</p>
+                    </div>
+                </div>
+                <div className="flex justify-end mt-6 gap-2">
+                    <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleSave} disabled={!hasChanges || !isValidDeviceName(name)}>Save</Button>
+                </div>
             </SheetHeader>
         </SheetContent>
     </Sheet>
@@ -119,6 +182,7 @@ const APIKeySheet = ({ device }: {
         await deleteAPIKey(device.id, key.id);
         setKey(null);
         setKeyValue(null);
+        toast("API Key deleted successfully.")
     }, [device, key]);
 
     return <Sheet open={open} onOpenChange={setOpen}>
@@ -136,8 +200,8 @@ const APIKeySheet = ({ device }: {
         </Tooltip>
         <SheetContent className="p-2">
             <SheetHeader>
-                <SheetTitle className="text-lg">API key</SheetTitle>
-                <SheetDescription className="font-thin">Create new API key or delete existing one.</SheetDescription>
+                <SheetTitle className="text-lg">Device API Key</SheetTitle>
+                <SheetDescription className="font-thin">Create new API key or delete one if exists.</SheetDescription>
             </SheetHeader>
             <div className="mx-4 py-2">{ 
                 loading ? <APIKeySkeleton />

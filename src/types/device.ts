@@ -1,5 +1,6 @@
 export enum DeviceType {
-    ESP32 = "ESP32"
+    ESP32 = "ESP32",
+    Arduino = "Arduino"
 }
 export interface IDevice {
     id: string,

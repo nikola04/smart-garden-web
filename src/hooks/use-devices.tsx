@@ -49,5 +49,5 @@ export const useDevices = () => {
         }
     }, [authLoading, loggedIn, fetchDevices]);
 
-    return ({ devices, loading });
+    return ({ devices, setDevices, loading });
 }
