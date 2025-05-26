@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./use-auth"
 import { IDevice } from "@/types/device";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/api";
 
 export const useDevices = () => {
     const { loggedIn, loading: authLoading, user } = useAuth();
@@ -13,24 +14,20 @@ export const useDevices = () => {
         const csrfToken = localStorage.getItem('csrfToken');
         try {
             setLoading(true);
-            const response = await fetch(`/api/device/?csrf=${csrfToken}`, {
+            const data = await apiFetch<{ devices: IDevice[] }>(`/api/device/?csrf=${csrfToken}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             });
-            console.log(response)
-            if (response.ok) {
-                const json = await response.json();
-                if(json?.data?.devices) {
-                    const raw = json.data.devices as IDevice[];
-                    const devices = raw.map((device) => ({ ...device, addedAt: new Date(device.addedAt) }));
-                    setDevices(devices);
-                }else toast(json.message);
-            }else {
-                const json = await response.json();
-                toast(json.message);
+            if(data && typeof data === "object" && 'devices' in data) {
+                const raw = data.devices as IDevice[];
+                const devices = raw.map((device) => ({ ...device, addedAt: new Date(device.addedAt) }));
+                setDevices(devices);
+            } else {
+                setDevices([]);
+                toast.error("Failed to fetch devices.");
             }
         } catch (err) {
             console.error(err);

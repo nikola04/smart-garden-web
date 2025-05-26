@@ -1,4 +1,5 @@
 "use client";
+import { apiFetch } from '@/lib/api';
 import { IUser } from '@/types/user';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 
@@ -26,21 +27,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const fetchUser = useCallback(async () => {
         setLoading(true);
-        const csrfToken = localStorage.getItem('csrfToken');
         try {
-            const response = await fetch(`/api/user/@me?csrf=${csrfToken}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                },
-            });
-            if (response.ok) {
-                const json = await response.json();
-                if(json?.data?.user) {
-                    setUser(json.data.user);
-                    setLoggedIn(true);
-                }else setUser(null);
+            const response = await apiFetch<{ user: IUser }>(`/api/user/@me`);
+            if (response && typeof response === "object" && 'user' in response) {
+                setUser(response.user);
+                setLoggedIn(true);
             } else {
                 setUser(null);
                 setLoggedIn(false);
