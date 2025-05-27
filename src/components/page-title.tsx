@@ -4,12 +4,24 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const titles: Record<string, string> = {
-    "/app": "Dashboard",
-    "/app/analytics": "Analytics",
-    "/app/family": "Family",
-    "/app/devices": "Devices",
-    "/app/sensors": "Sensors"
+    "/project": "Dashboard",
+    "/project/:projectId/analytics": "Analytics",
+    "/project/:projectId/family": "Family",
+    "/project/:projectId/devices": "Devices",
+    "/project/:projectId/sensors": "Sensors"
 };
+
+
+function getTitleFromPath(pathname: string): string {
+    const projectRouteRegex = /^\/project\/[^/]+(\/[^/]*)?$/;
+    if (!projectRouteRegex.test(pathname)) {
+        return "";
+    }
+
+    const [basePath] = pathname.split("/").slice(3);
+    const staticPath = `/project/:projectId${basePath ? `/${basePath}` : ""}`;
+    return titles[staticPath] || "Dashboard";
+}
 
 export default function PageTitle(){
     const [title, setTitle] = useState("");
@@ -17,7 +29,7 @@ export default function PageTitle(){
     const pathname = usePathname();
 
     useEffect(() => {
-        setTitle(titles[pathname] || "");
+        setTitle(getTitleFromPath(pathname));
     }, [pathname]);
     
     return <>{ title }</>

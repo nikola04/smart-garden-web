@@ -38,41 +38,28 @@ export function ProjectSwitcher({
         setSelectedProject(project);
         router.replace(`/project/${project.id}/`);
     };
-    return (
-        <SidebarMenu>
-        <SidebarMenuItem>
+    return <SidebarMenu>
+        <SidebarMenuItem className="w-full relative">
             <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <FolderKanban className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                    <span className="font-semibold">Project</span>
-                    <span className="">{loading ? "" : selectedProject?.name ?? "None" }&nbsp;</span>
-                </div>
-                <ChevronsUpDown className="ml-auto" />
-                </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width]"
-                align="start"
-            >
-                {projects.map((project) => (
-                <DropdownMenuItem
-                    key={project.id}
-                    onSelect={() => handleProjectChange(project)}
-                >
-                    {project.name}{" "}
-                    {project.id === selectedProject?.id && <Check className="ml-auto" />}
-                </DropdownMenuItem>
-                ))}
-            </DropdownMenuContent>
+                <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton size="lg" className="data-[state=open]:ring-2 data-[state=open]:ring-primary focus-visible:ring-0">
+                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                            <FolderKanban className="size-4" />
+                        </div>
+                        <div className="flex flex-col gap-0.5 leading-none">
+                            <span className="font-semibold">Project</span>
+                            <span className="">{loading ? "" : selectedProject?.name ?? "None"}&nbsp;</span>
+                        </div>
+                        <ChevronsUpDown className="ml-auto" />
+                    </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
+                    {projects.map((project) => <DropdownMenuItem key={project.id} onSelect={() => handleProjectChange(project)} >
+                        {project.name}{" "}
+                        {project.id === selectedProject?.id && <Check className="ml-auto" />}
+                    </DropdownMenuItem>)}
+                </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>
-        </SidebarMenu>
-    )
+    </SidebarMenu>
 }
