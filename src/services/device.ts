@@ -1,8 +1,8 @@
 import { apiFetch } from "@/lib/api";
 import { DeviceType, IDevice } from "@/types/device";
 
-export const createDevice = async (name: string, type: DeviceType): Promise<IDevice|null> => {
-        const data = await apiFetch<{ device: IDevice }>(`/api/device`, { 
+export const createDevice = async (name: string, type: DeviceType, projectId: string): Promise<IDevice|null> => {
+        const data = await apiFetch<{ device: IDevice }>(`/api/project/${projectId}/device`, { 
         method: "POST",
         body: JSON.stringify({ name, type })
     });

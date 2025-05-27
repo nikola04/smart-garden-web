@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ChartLine, Cpu, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
@@ -9,34 +9,44 @@ import { NavUser } from "./nav-user";
 import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-
-const items = [
-  { title: "Dashboard", url: "/app", icon: LayoutDashboard },
-  { title: "Analytics", url: "/app/analytics", icon: ChartLine },
-  { title: "Family", url: "/app/family", icon: Users },
-];
-const gearItems = [
-  { title: "Devices", url: "/app/devices", icon: Cpu },
-  { title: "Sensors", url: "/app/sensors", icon: ThermometerSun },
-];
+import { ProjectSwitcher } from "./project-switcher";
+import { useProjects } from "@/hooks/use-projects";
 
 export function AppSidebar() {
     const { user, loggedIn, loading } = useAuth();
     const path = usePathname();
     const router = useRouter();
+    const { projectId } = useParams();
+
+    const { projects, loading: loadingProjects } = useProjects();
+
     useEffect(() => {
         if (!loggedIn && !loading) {
             router.push(`/login?redirect=${encodeURIComponent(path)}`);
         }
     }, [loggedIn, loading, router, path]);
 
+    const currentProjectId = projectId || "defaultProject";
+
+    const items = [
+        { title: "Dashboard", url: `/project/${currentProjectId}`, icon: LayoutDashboard },
+        { title: "Analytics", url: `/project/${currentProjectId}/analytics`, icon: ChartLine },
+        { title: "Family", url: `/project/${currentProjectId}/family`, icon: Users },
+    ];
+
+    const gearItems = [
+        { title: "Devices", url: `/project/${currentProjectId}/devices`, icon: Cpu },
+        { title: "Sensors", url: `/project/${currentProjectId}/sensors`, icon: ThermometerSun },
+    ];
+
     return <Sidebar variant="inset">
         <SidebarHeader>
-            <SidebarMenu>
+            {/* <SidebarMenu>
                 <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:p-1.5!">
                     <span className="text-lg font-black">MyGarden</span>
                 </div>
-            </SidebarMenu>
+            </SidebarMenu> */}
+            <ProjectSwitcher projects={projects} loading={loadingProjects || !loggedIn} />
         </SidebarHeader>
         <SidebarContent>
             <CustomSidebarGroup items={items} />

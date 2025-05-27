@@ -13,9 +13,11 @@ import { Select } from "@radix-ui/react-select";
 import { isValidDeviceName } from "@/validators/device";
 import { createDevice } from "@/services/device";
 import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 export const DevicesWrapper = () => {
-    const { devices, setDevices } = useDevices();
+    const { projectId } = useParams<{ projectId: string }>();
+    const { devices, setDevices } = useDevices(projectId);
 
     const updateDevice = useCallback((deviceId: string, name: string, type: DeviceType) => setDevices((prev) => 
         prev.map((device) => device.id === deviceId ?  ({ ...device, name, type }) : device )
@@ -31,7 +33,7 @@ export const DevicesWrapper = () => {
                 <h1 className="text-lg font-bold">My Devices</h1>
                 <p className="font-thin">All devices that you have added.</p>
             </div>
-            <CreateDeviceDialog onCreate={addDevice}>
+            <CreateDeviceDialog onCreate={addDevice} projectId={projectId}>
                 <Button><Plus />New</Button>
             </CreateDeviceDialog>
         </div>
@@ -39,9 +41,10 @@ export const DevicesWrapper = () => {
     </div>
 }
 
-const CreateDeviceDialog = ({ children, onCreate }: {
+const CreateDeviceDialog = ({ children, onCreate, projectId }: {
     children: ReactNode;
     onCreate: (device: IDevice) => void;
+    projectId: string;
 }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
@@ -50,14 +53,14 @@ const CreateDeviceDialog = ({ children, onCreate }: {
 
     const handleCreate = useCallback(async () => {
         if(!isValid) return;
-        const device = await createDevice(name.trim(), type);
+        const device = await createDevice(name.trim(), type, projectId);
         if(!device)
             return;
         onCreate(device);
         setOpen(false);
         toast("Device created successfully.");
         setName("");
-    }, [name, type, isValid, onCreate]);
+    }, [name, type, isValid, onCreate, projectId]);
 
     return <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
