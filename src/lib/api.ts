@@ -42,6 +42,9 @@ export async function apiFetch<T = undefined>(url: string, options: RequestInit 
                 const refreshed = await refreshToken();
                 if(refreshed)
                     return apiFetch<T>(url, options, auth);
+                resetAuthToken();
+                toast("Session expired.");
+                return null;
             }
             toast(json.message);
             return null;
@@ -59,6 +62,11 @@ export async function apiFetch<T = undefined>(url: string, options: RequestInit 
 function getAuthToken(): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem('accessToken');
+}
+
+function resetAuthToken() {
+    if (typeof window === 'undefined') return null;
+    localStorage.removeItem('accessToken');
 }
 
 function getCsrfToken(): string | null {

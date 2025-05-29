@@ -4,5 +4,6 @@ export const metadata = {
 
 export default function Dashboard(){
     return <div>
+        Hello!
     </div>
 }

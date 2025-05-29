@@ -1,33 +1,17 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton"
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { ChartLine, Cpu, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import Link from "next/link";
-import { ForwardRefExoticComponent, RefAttributes, useEffect } from "react";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { ProjectSwitcher } from "./project-switcher";
-import { useProjects } from "@/hooks/use-projects";
+import { SidebarUserNavSkeleton } from "./skeletons/sidebar.skeleton";
 
-export function AppSidebar() {
-    const { user, loggedIn, loading } = useAuth();
-    const path = usePathname();
-    const router = useRouter();
-    const { projectId } = useParams();
-
-    const { projects, loading: loadingProjects } = useProjects();
-
-    useEffect(() => {
-        if (!loggedIn && !loading) {
-            router.push(`/login?redirect=${encodeURIComponent(path)}`);
-        }
-    }, [loggedIn, loading, router, path]);
-
-    const currentProjectId = projectId || "defaultProject";
-
+const useSidebarItems = (currentProjectId: string) => {
     const items = [
         { title: "Dashboard", url: `/project/${currentProjectId}`, icon: LayoutDashboard },
         { title: "Analytics", url: `/project/${currentProjectId}/analytics`, icon: ChartLine },
@@ -39,14 +23,17 @@ export function AppSidebar() {
         { title: "Sensors", url: `/project/${currentProjectId}/sensors`, icon: ThermometerSun },
     ];
 
+    return ({ items, gearItems });
+}
+
+export function AppSidebar() {
+    const { user, loading } = useAuth();
+    const { projectId } = useParams<{ projectId: string }>();
+
+    const { items, gearItems } = useSidebarItems(projectId);
     return <Sidebar variant="inset">
         <SidebarHeader>
-            {/* <SidebarMenu>
-                <div className="flex gap-2 px-1.5 items-center cursor-default data-[slot=sidebar-menu-button]:p-1.5!">
-                    <span className="text-lg font-black">MyGarden</span>
-                </div>
-            </SidebarMenu> */}
-            <ProjectSwitcher projects={projects} loading={loadingProjects || !loggedIn} />
+            <ProjectSwitcher projectId={projectId} loading={loading} />
         </SidebarHeader>
         <SidebarContent>
             <CustomSidebarGroup items={items} />
@@ -54,51 +41,39 @@ export function AppSidebar() {
         </SidebarContent>
         <SidebarFooter>
             { user != null ? <NavUser user={user} /> :
-                <SidebarMenu>
-                <SidebarMenuItem>
-                    <div className="flex items-center space-x-4 p-2">
-                        <Skeleton className="h-8 w-8 rounded-lg" />
-                        <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
-                            <Skeleton className="h-4 w-32" />
-                            <Skeleton className="h-3 w-40" />
-                        </div>
-                    </div>
-                </SidebarMenuItem>
-                </SidebarMenu>
+                <SidebarUserNavSkeleton />
             }
         </SidebarFooter>
     </Sidebar>;
 }
 
 function CustomSidebarGroup({
-  title,
-  items,
+    title,
+    items,
 }: {
-  title?: string;
-  items: { url: string; title: string; icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> }[];
+    title?: string;
+    items: { url: string; title: string; icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> }[];
 }) {
-  const pathname = usePathname();
+    const pathname = usePathname();
 
-  return (
-    <SidebarGroup>
-      {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === item.url}
-              >
-                <Link href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
-  );
+    return <SidebarGroup>
+        {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
+        <SidebarGroupContent>
+            <SidebarMenu>
+            {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.url}
+                >
+                    <Link href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                    </Link>
+                </SidebarMenuButton>
+                </SidebarMenuItem>
+            ))}
+            </SidebarMenu>
+        </SidebarGroupContent>
+    </SidebarGroup>;
 }

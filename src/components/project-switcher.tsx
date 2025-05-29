@@ -5,34 +5,24 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
 import { IProject } from "@/types/project"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { useProject } from "@/hooks/use-project"
 
 export function ProjectSwitcher({
-    projects,
-    loading
+    projectId,
+    loading,
 }: {
-    projects: IProject[],
+    projectId: string,
     loading: boolean
 }) {
+    const { project, projects } = useProject(projectId);
     const [selectedProject, setSelectedProject] = useState<IProject|null>(null);
     const router = useRouter();
-    const { projectId } = useParams();
 
     useEffect(() => {
-        const project = projects.find((p) => p.id === projectId);
-        if(!project){
-            if(loading) return;
-            const firstProject = projects.length > 0 ? projects[0] : null;
-            if(!firstProject) {
-                router.replace("/project/select-project");
-                return;
-            }
-            router.replace(`/project/${firstProject.id}/`);
-            setSelectedProject(firstProject);
-            return;
-        }
+        if(!project) return;
         setSelectedProject(project);
-    }, [projects, loading, projectId, router]);
+    }, [project]);
 
     const handleProjectChange = (project: IProject) => {
         setSelectedProject(project);
@@ -48,7 +38,7 @@ export function ProjectSwitcher({
                         </div>
                         <div className="flex flex-col gap-0.5 leading-none">
                             <span className="font-semibold">Project</span>
-                            <span className="">{loading ? "" : selectedProject?.name ?? "None"}&nbsp;</span>
+                            <span className="">{loading ? "" : selectedProject?.name ?? ""}&nbsp;</span>
                         </div>
                         <ChevronsUpDown className="ml-auto" />
                     </SidebarMenuButton>

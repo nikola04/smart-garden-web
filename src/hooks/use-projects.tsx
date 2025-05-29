@@ -9,7 +9,7 @@ export const useProjects = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [projects, setProjects] = useState<IProject[]>([]);
 
-    const fetchDevices = useCallback(async () => {
+    const fetchProjects = useCallback(async () => {
         if(user == null) return;
         try {
             setLoading(true);
@@ -35,11 +35,11 @@ export const useProjects = () => {
         if(authLoading) {
             setLoading(true);
         }else if(!authLoading && loggedIn){
-            fetchDevices();
+            fetchProjects();
         }else if(!authLoading) {
             setLoading(false);
         }
-    }, [authLoading, loggedIn, fetchDevices]);
+    }, [authLoading, loggedIn, fetchProjects]);
 
     return ({ projects, setProjects, loading });
 }
