@@ -17,7 +17,7 @@ import { useParams } from "next/navigation";
 
 export const DevicesWrapper = () => {
     const { projectId } = useParams<{ projectId: string }>();
-    const { devices, setDevices } = useDevices(projectId);
+    const { devices, setDevices, loading } = useDevices(projectId);
 
     const updateDevice = useCallback((deviceId: string, name: string, type: DeviceType) => setDevices((prev) => 
         prev.map((device) => device.id === deviceId ?  ({ ...device, name, type }) : device )
@@ -31,13 +31,20 @@ export const DevicesWrapper = () => {
         <div className="flex justify-between items-center">
             <div>
                 <h1 className="text-lg font-bold">My Devices</h1>
-                <p className="font-thin">All devices that you have added.</p>
+                <p className="font-light text-sm">All devices that you have added.</p>
             </div>
             <CreateDeviceDialog onCreate={addDevice} projectId={projectId}>
                 <Button><Plus />New</Button>
             </CreateDeviceDialog>
         </div>
-        <DeviceList devices={devices} updateDevice={updateDevice} deleteDevice={deleteDevice} />
+        <DeviceList devices={devices} loading={loading} updateDevice={updateDevice} deleteDevice={deleteDevice} />
+        { !loading && devices.length == 0 && <div className="flex items-center gap-2 font-light text-md">
+            <span>You have no devices. Add new one by clicking on </span>
+            <CreateDeviceDialog onCreate={addDevice} projectId={projectId}>
+                <Button className="flex items-center" size="sm"><Plus/></Button>
+            </CreateDeviceDialog>
+            <span>button.</span>
+        </div>}
     </div>
 }
 

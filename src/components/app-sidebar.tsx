@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname } from "next/navigation";
-import { ChartLine, Cpu, LayoutDashboard, LucideProps, ThermometerSun, Users } from "lucide-react";
+import { ChartLine, Cpu, LayoutDashboard, LucideProps, ThermometerSun, Wrench } from "lucide-react";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
@@ -15,7 +15,7 @@ const useSidebarItems = (currentProjectId: string) => {
     const items = [
         { title: "Dashboard", url: `/project/${currentProjectId}`, icon: LayoutDashboard },
         { title: "Analytics", url: `/project/${currentProjectId}/analytics`, icon: ChartLine },
-        { title: "Family", url: `/project/${currentProjectId}/family`, icon: Users },
+        { title: "Settings", url: `/project/${currentProjectId}/settings`, icon: Wrench },
     ];
 
     const gearItems = [
@@ -47,10 +47,7 @@ export function AppSidebar() {
     </Sidebar>;
 }
 
-function CustomSidebarGroup({
-    title,
-    items,
-}: {
+function CustomSidebarGroup({ title, items }: {
     title?: string;
     items: { url: string; title: string; icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> }[];
 }) {

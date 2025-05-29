@@ -17,12 +17,16 @@ import { Skeleton } from "./ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { deleteDevice, updateDevice } from "@/services/device";
 import { isValidDeviceName } from "@/validators/device";
+import { DeviceListSkeleton } from "./skeletons/devicelist.skeleton";
 
-export const DeviceList = ({ devices, updateDevice, deleteDevice }: {
+export const DeviceList = ({ devices, loading, updateDevice, deleteDevice }: {
     devices: IDevice[];
+    loading: boolean;
     updateDevice: (deviceId: string, name: string, type: DeviceType) => void;
     deleteDevice: (deviceId: string) => void;
 }) => {
+    if(loading)
+        return <DeviceListSkeleton />
     return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
         {devices.map((device) => (
             <DeviceCard
@@ -133,7 +137,7 @@ const DeviceSheet = ({ device, onUpdate, onDelete }: {
                 <div className="flex justify-between mt-6 gap-2">
                     <DeviceDeleteContent onDelete={handleDelete}/>
                     <div className="flex gap-2">
-                        <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button variant="ghost" onClick={() => setOpen(false)}><span className="font-normal">Cancel</span></Button>
                         <Button onClick={handleSave} disabled={!hasChanges || !isValidDeviceName(name)}><Save />Save</Button>
                     </div>
                 </div>
@@ -208,9 +212,7 @@ const APIKeySheet = ({ device }: {
                     </>
                     : <>
                         <KeyContent apiKey={key} keyValue={keyValue} isCopied={isCopied} onCopy={() => setCopied(true)}/>
-                        <SheetFooter className="mt-0">
-                            <KeyDeleteContent onDelete={handleDeleteKey}/>
-                        </SheetFooter>
+                        <KeyDeleteContent onDelete={handleDeleteKey}/>
                     </> }
                 </div> }
             </div>
@@ -282,7 +284,7 @@ const DeviceDeleteContent = ({ onDelete }: {
 }) => {
     return <AlertDialog>
         <AlertDialogTrigger asChild>
-            <Button type="button" variant="secondary"><Trash2 />Delete</Button>
+            <Button type="button" variant="secondary" className="font-normal"><Trash2 />Delete</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
             <AlertDialogHeader>
@@ -302,7 +304,7 @@ const KeyDeleteContent = ({ onDelete }: {
 }) => {
     return <AlertDialog>
         <AlertDialogTrigger asChild>
-            <Button className="ml-auto" type="button" variant="secondary"><Trash2 />Delete</Button>
+            <Button className="ml-auto font-normal" type="button" variant="secondary"><Trash2 />Delete</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
             <AlertDialogHeader>

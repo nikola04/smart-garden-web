@@ -1,7 +1,7 @@
 "use client"
 
-import { Check, ChevronsUpDown, FolderKanban } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Check, ChevronsUpDown, FolderKanban, Plus } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
 import { IProject } from "@/types/project"
@@ -28,6 +28,10 @@ export function ProjectSwitcher({
         setSelectedProject(project);
         router.replace(`/project/${project.id}/`);
     };
+
+    const handleNewProject = () => {
+        router.push('/select-project?new')
+    }
     return <SidebarMenu>
         <SidebarMenuItem className="w-full relative">
             <DropdownMenu>
@@ -38,7 +42,7 @@ export function ProjectSwitcher({
                         </div>
                         <div className="flex flex-col gap-0.5 leading-none">
                             <span className="font-semibold">Project</span>
-                            <span className="">{loading ? "" : selectedProject?.name ?? ""}&nbsp;</span>
+                            <span className="max-w-[130px] overflow-x-clip whitespace-nowrap text-ellipsis">{loading ? "" : selectedProject?.name ?? ""}&nbsp;</span>
                         </div>
                         <ChevronsUpDown className="ml-auto" />
                     </SidebarMenuButton>
@@ -48,6 +52,8 @@ export function ProjectSwitcher({
                         {project.name}{" "}
                         {project.id === selectedProject?.id && <Check className="ml-auto" />}
                     </DropdownMenuItem>)}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleNewProject}><Plus className="mr-2 h-4 w-4" /> New Project</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const titles: Record<string, string> = {
     "/project": "Dashboard",
     "/project/:projectId/analytics": "Analytics",
-    "/project/:projectId/family": "Family",
+    "/project/:projectId/settings": "Settings",
     "/project/:projectId/devices": "Devices",
     "/project/:projectId/sensors": "Sensors"
 };
