@@ -49,7 +49,7 @@ function ProjectCard({ project }: { project: IProject }) {
             <CardFooter>
                 <div className="flex items-center gap-2 ml-auto">
                     <Button variant={"ghost"} onClick={handleConfig} className="font-normal"><Wrench /></Button>
-                    <Button variant={"secondary"} onClick={handleSelect} className="font-normal hover:bg-primary hover:text-secondary"><SquareArrowOutUpRight />Select</Button>
+                    <Button variant={"secondary"} onClick={handleSelect} className="font-normal hover:bg-primary hover:text-white"><SquareArrowOutUpRight />Select</Button>
                 </div>
             </CardFooter>
         </Card>
