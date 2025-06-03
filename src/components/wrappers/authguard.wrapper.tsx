@@ -12,7 +12,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (loading || loggedIn)
             return;
-        router.push(`/login?redirect=${encodeURIComponent(path)}`);
+        router.push(`/auth/login?redirect=${encodeURIComponent(path)}`);
     }, [loading, loggedIn, router, path]);
 
     return children;

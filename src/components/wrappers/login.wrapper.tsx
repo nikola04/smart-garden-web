@@ -33,7 +33,7 @@ function FormWithAuthCheck() {
     const searchParams = useSearchParams();
     const redirectParam = searchParams.get('redirect');
     const loginError = searchParams.get('error');
-    const path = useMemo(() => typeof redirectParam === "string" ? redirectParam : '/app', [redirectParam]);
+    const path = useMemo(() => typeof redirectParam === "string" ? redirectParam : '/', [redirectParam]);
 
     const hasHandledErrorRef = useRef(false);
     useEffect(() => {
@@ -170,7 +170,7 @@ function LoginForm({ className, login, ...props} : React.ComponentProps<"div"> &
                             </div>
                             <div className="text-center text-sm">
                                 <p>Don&apos;t have an account?&nbsp;
-                                    <Link href="/register" className="text-primary">Sign up</Link>
+                                    <Link href="/auth/register" className="text-primary">Sign up</Link>
                                 </p>
                             </div>
                         </div>
