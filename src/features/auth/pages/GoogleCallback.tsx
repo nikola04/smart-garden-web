@@ -16,7 +16,7 @@ export default function GoogleCallback(){
     const googleLogin = useCallback(async (code: string, state: string) => {
         const resp = await googleCallback(code, state);
         if(!resp){
-            navigate("/login?error=google-not-found");
+            navigate("/auth/login?error=google-not-found");
             return ;
         }
         login(resp.user, resp.accessToken, resp.csrfToken);
@@ -29,7 +29,7 @@ export default function GoogleCallback(){
 
     useEffect(() => {
         if(!code || !state){
-            navigate("/login?error=google-no-code");
+            navigate("/auth/login?error=google-no-code");
             return;
         }
         googleLogin(code, state);

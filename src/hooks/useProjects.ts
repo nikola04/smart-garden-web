@@ -3,6 +3,7 @@ import { useAuth } from "./useAuth"
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
 import type { IProject } from "@/types/project";
+import { getProjects } from "@/features/project/services/project";
 
 export const useProjects = () => {
     const { loggedIn, loading: authLoading, user } = useAuth();
@@ -13,17 +14,14 @@ export const useProjects = () => {
         if(user == null) return;
         try {
             setLoading(true);
-            const data = await apiFetch<{ projects: IProject[] }>(`/project`, {
-                method: 'GET'
-            });
-            if(data && typeof data === "object" && 'projects' in data) {
-                const raw = data.projects as IProject[];
-                const projects = raw.map((project) => ({ ...project, addedAt: new Date(project.updatedAt), createdAt: new Date(project.createdAt) }));
-                setProjects(projects);
-            } else {
+            const projects = await getProjects();
+            if(!projects){
                 setProjects([]);
                 toast.error("Failed to fetch projects.");
+                return;
             }
+            
+            setProjects(projects);
         } catch (err) {
             console.error(err);
         } finally{
