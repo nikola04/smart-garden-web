@@ -1,16 +1,16 @@
-import { ChartLine, Cpu, LayoutDashboard, LucideProps, MoreVerticalIcon, ThermometerSun, Wrench } from "lucide-react";
+import { ChartLine, Cpu, LayoutDashboard, type LucideProps, MoreVerticalIcon, ThermometerSun, Wrench } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Link, useLocation, useParams } from "react-router";
 import { SidebarUserNavSkeleton } from "./ProjectSkeleton";
-import { IUser } from "@/types/user";
+import type { IUser } from "@/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProjectSwitcher } from "./ProjectSwitcher";
 
 const useSidebarItems = (currentProjectId: string) => {
     const items = [
-        { title: "Dashboard", url: `/project/${currentProjectId}`, icon: LayoutDashboard },
+        { title: "Dashboard", url: `/project/${currentProjectId}/dashboard`, icon: LayoutDashboard },
         { title: "Analytics", url: `/project/${currentProjectId}/analytics`, icon: ChartLine },
         { title: "Settings", url: `/project/${currentProjectId}/settings`, icon: Wrench },
     ];

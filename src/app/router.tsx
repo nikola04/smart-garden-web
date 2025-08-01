@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import Home from "../features/home/pages/Home";
 import Dashboard from "../features/project/pages/Dashboard";
 import SelectProject from "../features/project/pages/SelectProject";
@@ -29,7 +29,7 @@ export const router = createBrowserRouter([{
         Component: AuthGuard,
         children: [{
             index: true,
-            Component: SelectProject
+            element: <Navigate to="select-project" replace />
         },{
             path: 'select-project',
             Component: SelectProject
@@ -38,7 +38,7 @@ export const router = createBrowserRouter([{
             Component: ProjectLayout,
             children: [{
                 index: true,
-                Component: Dashboard
+                element: <Navigate to="dashboard" replace />
             }, {
                 path: 'dashboard',
                 Component: Dashboard

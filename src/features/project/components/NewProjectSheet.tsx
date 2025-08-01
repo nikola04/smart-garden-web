@@ -53,7 +53,7 @@ function NewProjectSheet({ open, setOpen, onCreate, children }: {
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="project-desc" className="text-sm font-medium">Description</Label>
-                    <Textarea id="project-desc" maxLength={100} className="col-span-3" placeholder="Project description..." value={description} onChange={e => setDescription(e.target.value)} />
+                    <Textarea id="project-desc" maxLength={100} className="col-span-3 max-h-64" placeholder="Project description..." value={description} onChange={e => setDescription(e.target.value)} />
                 </div>
                 <Button type="submit" onClick={handleCreate} disabled={!isValid || loading}><Save/>Create</Button>
             </div>
