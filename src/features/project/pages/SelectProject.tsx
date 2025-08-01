@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useState } from "react";
 import ProjectsSkeleton from "../components/ProjectsSkeleton";
 import { useLocation, useNavigate } from "react-router";
-import { useProjects } from "@/hooks/useProjects";
+import { useProjects } from "@/features/project/hooks/useProjects";
 import type { IProject } from "@/types/project";
 import NewProjectSheet from "../components/NewProjectSheet";
 import { ProjectList } from "../components/ProjectList";

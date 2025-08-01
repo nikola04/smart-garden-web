@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAuth } from "./useAuth"
+import { useAuth } from "../../../hooks/useAuth"
 import { toast } from "sonner";
-import { apiFetch } from "@/lib/api";
 import type { IProject } from "@/types/project";
 import { getProjects } from "@/features/project/services/project";
 

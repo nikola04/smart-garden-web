@@ -5,6 +5,7 @@ import SelectProject from "../features/project/pages/SelectProject";
 import AuthGuard from "@/components/AuthGuard";
 import Login from "@/features/auth/pages/Login";
 import GoogleCallback from "@/features/auth/pages/GoogleCallback";
+import ProjectLayout from "@/features/project/layouts/ProjectLayout";
 
 export const router = createBrowserRouter([{
     path: '/',
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([{
             Component: SelectProject
         }, {
             path: ':projectId',
+            Component: ProjectLayout,
             children: [{
                 index: true,
                 Component: Dashboard

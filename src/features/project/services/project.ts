@@ -15,6 +15,20 @@ export const getProjects = async (): Promise<IProject[]|null> => {
     return null;
 }
 
+export const getProject = async (projectId: string): Promise<IProject|null> => {
+    const data = await apiFetch<{ project: IProject }>(`/project/${projectId}`, {
+        method: 'GET'
+    });
+    
+    if(data && typeof data === "object" && 'project' in data) {
+        const raw = data.project as IProject
+        const project = ({ ...raw, addedAt: new Date(raw.updatedAt), createdAt: new Date(raw.createdAt) });
+        return project;
+    }
+    
+    return null;
+}
+
 export const createProject = async (name: string, description: string): Promise<IProject|null> => {
         const data = await apiFetch<{ project: IProject }>(`/project/`, { 
         method: "POST",
