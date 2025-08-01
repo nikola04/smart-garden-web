@@ -13,7 +13,7 @@ export const useProjects = () => {
         if(user == null) return;
         try {
             setLoading(true);
-            const data = await apiFetch<{ projects: IProject[] }>(`/api/project`, {
+            const data = await apiFetch<{ projects: IProject[] }>(`/project`, {
                 method: 'GET'
             });
             if(data && typeof data === "object" && 'projects' in data) {

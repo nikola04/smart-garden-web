@@ -3,11 +3,8 @@ import type { IUser } from "@/types/user";
 
 export const googleCallback = async (code: string, state: string): Promise<{ user: IUser, accessToken: string, csrfToken: string }|null> => {
      try {
-        const data = await apiFetch<{ user: IUser, accessToken: string, csrfToken: string }>(`/api/auth/google/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`, {
+        const data = await apiFetch<{ user: IUser, accessToken: string, csrfToken: string }>(`/auth/google/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
         }, false);
         if (!data)
             return null;
@@ -28,22 +25,10 @@ export const googleCallback = async (code: string, state: string): Promise<{ use
 
 export const refreshAuthToken = async (): Promise<boolean> => {
     try {
-        const response = await fetch('/api/auth/register', {
+        const data = await apiFetch<{ user: IUser, accessToken: string, csrfToken: string }>('/auth/refresh', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        }, false);
 
-        if (!response.ok)
-            return false;
-
-        const json = await response.json();
-        if (!json || !json.data) {
-            console.error('Invalid response format:', json);
-            return false;
-        }
-        const data = json.data as { user: IUser, accessToken: string, csrfToken: string };
         if (data && data.user && data.accessToken && data.csrfToken) {
             localStorage.setItem('accessToken', data.accessToken);
             localStorage.setItem('csrfToken', data.csrfToken);
@@ -63,11 +48,8 @@ interface RegisterData {
 }
 export const registerUser = async ({ name, email, password }: RegisterData): Promise<{ user: IUser, accessToken: string, csrfToken: string }|null> => {
     try {
-        const data = await apiFetch<{ user: IUser, accessToken: string, csrfToken: string }>('/api/auth/register', {
+        const data = await apiFetch<{ user: IUser, accessToken: string, csrfToken: string }>('/auth/register', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify({ name, email, password })
         });
         if (!data)

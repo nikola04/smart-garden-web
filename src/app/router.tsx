@@ -4,6 +4,7 @@ import Dashboard from "../features/project/pages/Dashboard";
 import SelectProject from "../features/project/pages/SelectProject";
 import AuthGuard from "@/components/AuthGuard";
 import Login from "@/features/auth/pages/Login";
+import GoogleCallback from "@/features/auth/pages/GoogleCallback";
 
 export const router = createBrowserRouter([{
     path: '/',
@@ -14,6 +15,12 @@ export const router = createBrowserRouter([{
         children: [{
             path: 'login',
             Component: Login
+        }, {
+            path: 'callback',
+            children: [{
+                path: 'google',
+                Component: GoogleCallback
+            }]
         }]
     }, {
         path: 'project',

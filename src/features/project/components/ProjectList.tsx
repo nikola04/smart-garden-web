@@ -1,5 +1,3 @@
-"use client";
-
 import type { IProject } from "@/types/project";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from "@/components/ui/card";
 import { Plus, SquareArrowOutUpRight, Wrench } from "lucide-react";

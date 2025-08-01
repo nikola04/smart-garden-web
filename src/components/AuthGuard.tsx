@@ -1,8 +1,8 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, type PropsWithChildren } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 
-export default function AuthGuard({ children }: PropsWithChildren) {
+export default function AuthGuard() {
     const { loggedIn, loading } = useAuth()
     const navigate = useNavigate()
     const location = useLocation()
@@ -13,6 +13,6 @@ export default function AuthGuard({ children }: PropsWithChildren) {
 
         navigate(`/auth/login?redirect=${encodeURIComponent(location.pathname)}`)
     }, [loading, location.pathname, loggedIn, navigate])
-
-    return children
+    
+    return <Outlet />
 }
