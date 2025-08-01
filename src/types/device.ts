@@ -1,4 +1,4 @@
-const DeviceType = {
+export const DeviceType = {
     ESP32: "ESP32",
     Arduino: "Arduino",
 } as const

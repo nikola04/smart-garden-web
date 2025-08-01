@@ -13,21 +13,21 @@ export function ProjectSwitcher({ projectId, loading }: {
 }) {
     const { projects } = useProjects();
     const { project } = useProject(projectId)
-    const [selectedProject, setSelectedProject] = useState<IProject|null>(null)
+    const [selected, setSelected] = useState<IProject|null>(null)
     const navigate = useNavigate()
 
     useEffect(() => {
         if(!project) return;
-        setSelectedProject(project);
+        setSelected(project);
     }, [project]);
 
     const handleProjectChange = (project: IProject) => {
-        setSelectedProject(project);
+        setSelected(project);
         navigate(`/project/${project.id}/`, { replace: true });
     };
 
     const handleNewProject = () => {
-        navigate('/select-project?new', { replace: true })
+        navigate('/project/select-project?new', { replace: true })
     }
     return <SidebarMenu>
         <SidebarMenuItem className="w-full relative">
@@ -39,7 +39,7 @@ export function ProjectSwitcher({ projectId, loading }: {
                         </div>
                         <div className="flex flex-col gap-0.5 leading-none">
                             <span className="font-semibold">Project</span>
-                            <span className="max-w-[130px] overflow-x-clip whitespace-nowrap text-ellipsis">{loading ? "" : selectedProject?.name ?? ""}&nbsp;</span>
+                            <span className="max-w-[130px] overflow-x-clip whitespace-nowrap text-ellipsis">{loading ? "" : selected?.name ?? ""}&nbsp;</span>
                         </div>
                         <ChevronsUpDown className="ml-auto" />
                     </SidebarMenuButton>
@@ -47,7 +47,7 @@ export function ProjectSwitcher({ projectId, loading }: {
                 <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
                     {projects.map((project) => <DropdownMenuItem key={project.id} onSelect={() => handleProjectChange(project)} >
                         {project.name}{" "}
-                        {project.id === selectedProject?.id && <Check className="ml-auto" />}
+                        {project.id === selected?.id && <Check className="ml-auto" />}
                     </DropdownMenuItem>)}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleNewProject}><Plus className="mr-2 h-4 w-4" /> New Project</DropdownMenuItem>

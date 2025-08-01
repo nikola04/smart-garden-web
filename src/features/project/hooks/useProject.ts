@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { IProject } from "@/types/project";
+import type { IProject } from "@/types/project";
 import { toast } from "sonner";
 import { getProject } from "../services/project";
 
@@ -10,8 +10,8 @@ export const useProject = (projectId?: string) => {
     const [project, setProject] = useState<IProject|null>(null);
 
     const fetchProject = useCallback(async () => {
-        if(!user) return;
-        if(!projectId) return;
+        if(!user || !projectId) return;
+        
         try {
             setLoading(true);
             const project = await getProject(projectId);
