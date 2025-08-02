@@ -7,9 +7,11 @@ import Login from "@/features/auth/pages/Login";
 import GoogleCallback from "@/features/auth/pages/GoogleCallback";
 import ProjectLayout from "@/features/project/layouts/ProjectLayout";
 import Devices from "@/features/project/pages/Devices";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const router = createBrowserRouter([{
     path: '/',
+    errorElement: <ErrorBoundary />,
     children: [{
         index: true, Component: Home
     }, {

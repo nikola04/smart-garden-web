@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
-import { Check, Copy, KeyRound, MonitorCog, Save, Trash2 } from "lucide-react";
+import { Check, Copy, KeyRound, MonitorCog, Radio, Save, Trash2 } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components//ui/sheet";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -44,9 +44,14 @@ const DeviceCard = ({ device, onUpdate, onDelete }: {
     onUpdate: (name: string, type: DeviceType) => void;
     onDelete: () => void;
 }) => {
+    const isOnline = true
+
     return <Card key={device.id} className="gap-4">
         <CardHeader className="flex justify-between items-center">
-            <CardTitle className="font-medium truncate max-w-[200px]">{device.name}</CardTitle>
+            <CardTitle className="flex items-center gap-2 font-medium truncate max-w-[200px]">
+                <p>{device.name}</p>
+                { isOnline && <div className="flex items-center gap-1 text-xs text-[#4CBB17]"><Radio color="#4CBB17" size={16} /><span>Online</span></div> }
+            </CardTitle>
             <div className="flex items-center gap-2">
                 <APIKeySheet device={device} />
                 <DeviceSheet device={device} onUpdate={onUpdate} onDelete={onDelete} />
@@ -96,7 +101,7 @@ const DeviceSheet = ({ device, onUpdate, onDelete }: {
         <Tooltip delayDuration={1000}>
             <SheetTrigger asChild>
                 <TooltipTrigger  asChild>
-                    <Button variant="outline" size="sm">
+                    <Button variant="ghost" size="sm">
                         <MonitorCog className="w-4 h-4" />
                     </Button>
                 </TooltipTrigger>
@@ -186,7 +191,7 @@ const APIKeySheet = ({ device }: {
         <Tooltip delayDuration={1000}>
             <SheetTrigger asChild>
                 <TooltipTrigger  asChild>
-                    <Button variant="outline" size="sm">
+                    <Button variant="ghost" size="sm">
                         <KeyRound className="w-4 h-4" />
                     </Button>
                 </TooltipTrigger>

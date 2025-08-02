@@ -26,7 +26,7 @@ function Dashboard() {
                     <div className="text-2xl font-semibold">{ devices } / { totalDevices }</div>
                     <div className="flex items-center gap-1 mt-1">
                         <Radio size={16} color={"#4CBB17"} />
-                        <p className="text-xs text-[#4CBB17]">Active Now</p>
+                        <p className="text-xs text-[#4CBB17]">Online</p>
                     </div>
                 </CardContent>
             </Card>
@@ -39,7 +39,7 @@ function Dashboard() {
                     </div>
                     <div className="flex items-center gap-1 mt-1">
                         <Radio size={16} color={"#4CBB17"} />
-                        <p className="text-xs text-[#4CBB17]">Now</p>
+                        <p className="text-xs text-[#4CBB17]">Live</p>
                     </div>
                 </CardContent>
             </Card>
@@ -49,7 +49,7 @@ function Dashboard() {
                     <div className="text-2xl font-semibold">{ moisture }%</div>
                     <div className="flex items-center gap-1 mt-1">
                         <Radio size={16} color={"#4CBB17"} />
-                        <p className="text-xs text-[#4CBB17]">Now</p>
+                        <p className="text-xs text-[#4CBB17]">Live</p>
                     </div>
                 </CardContent>
             </Card>
