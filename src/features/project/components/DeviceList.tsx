@@ -27,7 +27,7 @@ export const DeviceList = ({ devices, loading, updateDevice, deleteDevice }: {
 }) => {
     if(loading)
         return <DeviceListSkeleton />
-    return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
+    return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-2">
         {devices.map((device) => (
             <DeviceCard
                 key={device.id}

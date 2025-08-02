@@ -15,7 +15,7 @@ function ProjectLayout() {
     return <SidebarProvider>
             <ProjectWrapper>
                 <ProjectSidebar/>
-                <SidebarInset className="p-2">
+                <SidebarInset className="p-2" style={{ background: 'var(--background-alt)'}}>
                     <ProjectHeader />
                     <div className="flex flex-1 flex-col">
                         <div className="@container/main flex flex-1 flex-col gap-2">

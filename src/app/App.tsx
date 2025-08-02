@@ -8,8 +8,10 @@ function App() {
     return (
         <AuthProvider>
             <ThemeProvider>
-                <RouterProvider router={router} />
-                <Toaster />
+                <div style={{ background: 'var(--background-alt)'}}>
+                    <RouterProvider router={router} />
+                    <Toaster />
+                </div>
             </ThemeProvider>
         </AuthProvider>
     )

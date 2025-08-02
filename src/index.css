@@ -6,6 +6,7 @@
 :root {
   --radius: 0.65rem;
   --background: #ffffff;
+  --background-alt: #f4f4f5;
   --foreground: #000000;
   --card: #ffffff;
   --card-foreground: #000000;
@@ -40,6 +41,7 @@
 
 .dark {
   --background: #151513;
+  --background-alt: #151713;
   --foreground: #ffffff;
   --card: #282C25;
   --card-foreground: #ffffff;
