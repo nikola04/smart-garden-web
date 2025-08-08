@@ -10,3 +10,45 @@ export function formatDate(date: Date): string {
 
     return date.toLocaleString('en-US', options);
 }
+
+export function timeElapsed(date: Date): {
+    days?: number;
+    hours?: number;
+    minutes?: number;
+    seconds: number;
+} {
+    const elapsedSec = Math.floor((Date.now() - date.getTime()) / 1000);
+
+    const days = Math.floor(elapsedSec / 86400); // 24*60*60
+    const hours = Math.floor((elapsedSec % 86400) / 3600);
+    const minutes = Math.floor((elapsedSec % 3600) / 60);
+    const seconds = elapsedSec % 60;
+
+    const result: {
+        days?: number;
+        hours?: number;
+        minutes?: number;
+        seconds: number;
+    } = { seconds };
+
+    if (days > 0) result.days = days;
+    if (hours > 0) result.hours = hours;
+    if (minutes > 0) result.minutes = minutes;
+
+    return result;
+}
+
+export function formatTimeElapsedString(date: Date): string {
+    const elapsed = timeElapsed(date);
+
+    if (elapsed.days)
+        return `${elapsed.days} day${elapsed.days > 1 ? 's' : ''} ${elapsed.hours ?? 0} hour${(elapsed.hours ?? 0) !== 1 ? 's' : ''} ago`;
+
+    if (elapsed.hours)
+        return `${elapsed.hours} hour${elapsed.hours > 1 ? 's' : ''} ${elapsed.minutes ?? 0} min${(elapsed.minutes ?? 0) !== 1 ? 's' : ''} ago`;
+
+    if (elapsed.minutes)
+        return `${elapsed.minutes} min${elapsed.minutes > 1 ? 's' : ''} ago`;
+
+    return `Just now`
+}

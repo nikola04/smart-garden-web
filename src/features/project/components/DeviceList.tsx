@@ -44,13 +44,11 @@ const DeviceCard = ({ device, onUpdate, onDelete }: {
     onUpdate: (name: string, type: DeviceType) => void;
     onDelete: () => void;
 }) => {
-    const isOnline = true
-
-    return <Card key={device.id} className="gap-4">
+    return <Card className="gap-4">
         <CardHeader className="flex justify-between items-center">
             <CardTitle className="flex items-center gap-2 font-medium truncate max-w-[200px]">
                 <p>{device.name}</p>
-                { isOnline && <div className="flex items-center gap-1 text-xs text-[#4CBB17]"><Radio color="#4CBB17" size={16} /><span>Online</span></div> }
+                <DeviceCardStatus isActive={device.isActive} />
             </CardTitle>
             <div className="flex items-center gap-2">
                 <APIKeySheet device={device} />
@@ -62,6 +60,15 @@ const DeviceCard = ({ device, onUpdate, onDelete }: {
             <p className="text-sm text-muted-foreground">Added: {formatDate(device.addedAt)}</p>
         </CardContent>
     </Card>
+}
+
+const DeviceCardStatus = ({ isActive }: {
+    isActive: boolean
+}) => {
+    if(isActive)
+        return <div className="flex items-center gap-1 text-xs text-[#4CBB17]"><Radio color="#4CBB17" size={16} /><span>Online</span></div>
+
+    return <div className="flex items-center gap-1 text-xs text-[#f33131]"><Radio color="#f33131" size={16} /><span>Offline</span></div>
 }
 
 const DeviceSheet = ({ device, onUpdate, onDelete }: {

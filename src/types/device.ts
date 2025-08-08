@@ -9,6 +9,7 @@ export interface IDevice {
     id: string,
     name: string,
     type: DeviceType,
+    isActive: boolean,
     addedAt: Date,
     userId: string
 }
