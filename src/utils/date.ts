@@ -41,11 +41,15 @@ export function timeElapsed(date: Date): {
 export function formatTimeElapsedString(date: Date): string {
     const elapsed = timeElapsed(date);
 
-    if (elapsed.days)
-        return `${elapsed.days} day${elapsed.days > 1 ? 's' : ''} ${elapsed.hours ?? 0} hour${(elapsed.hours ?? 0) !== 1 ? 's' : ''} ago`;
+    if (elapsed.days){
+        const hoursString = `${elapsed.hours ?? 0} hour${(elapsed.hours ?? 0) !== 1 ? 's' : ''}`;
+        return `${elapsed.days} day${elapsed.days > 1 ? 's' : ''} ${(elapsed.hours ?? 0) > 0 ? hoursString : ''} ago`;
+    }
 
-    if (elapsed.hours)
-        return `${elapsed.hours} hour${elapsed.hours > 1 ? 's' : ''} ${elapsed.minutes ?? 0} min${(elapsed.minutes ?? 0) !== 1 ? 's' : ''} ago`;
+    if (elapsed.hours){
+        const minutesString = `${elapsed.minutes ?? 0} minutes${(elapsed.minutes ?? 0) !== 1 ? 's' : ''}`;
+        return `${elapsed.hours} hour${elapsed.hours > 1 ? 's' : ''} ${(elapsed.minutes ?? 0) > 0 ? minutesString : ''} ago`;
+    }
 
     if (elapsed.minutes)
         return `${elapsed.minutes} min${elapsed.minutes > 1 ? 's' : ''} ago`;

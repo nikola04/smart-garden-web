@@ -1,91 +1,70 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Radio } from "lucide-react"
-import DashboardChart from "../components/DashboardChart"
-import { useDevices } from "../hooks/useDevices"
+import { Droplets, HeartPulse, Info, ThermometerSun } from "lucide-react"
 import { useParams } from "react-router"
-import { useMemo } from "react"
 import { useAggregatedSnapshot } from "../hooks/useData"
-import { formatTimeElapsedString } from "@/utils/date"
-
-const chartData = [
-    { month: "January", moisture: 68 },
-    { month: "February", moisture: 82 },
-    { month: "March", moisture: 75 },
-    { month: "April", moisture: 69 },
-    { month: "May", moisture: 55 },
-    { month: "June", moisture: 33 }
-]
+import { useHealth } from "../hooks/useHealth"
+import type { IHealth } from "@/types/project"
+import { useMemo } from "react"
+import { DashboardCard } from "../components/DashboardCard"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 function Dashboard() {
     const { projectId } = useParams<{ projectId: string }>()
-    const { devices } = useDevices(projectId)
-    const { snapshot } = useAggregatedSnapshot(projectId)
-
-    const [activeDevices, totalDevices] = useMemo(() => {
-        return [devices.reduce((acc, device) => (device.isActive ? acc + 1 : acc), 0), devices.length]
-    }, [devices]);
+    const { health, loading: healthLoading } = useHealth(projectId)
+    const { snapshot, loading: snapshotLoading } = useAggregatedSnapshot(projectId)
 
     return <div className="flex flex-col p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <Card>
-                <CardContent className="px-6">
-                    <p className="text-sm text-muted-foreground mb-1">Devices</p>
-                    <div className="text-2xl font-semibold">{ activeDevices } / { totalDevices }</div>
-                    <div className="flex items-center gap-1 mt-1">
-                        {/* <Radio size={16} color={"#4CBB17"} /> */}
-                        <p className="text-xs text-[#4CBB17]">Online</p>
-                    </div>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent className="px-6">
-                    <p className="text-sm text-muted-foreground mb-1">Temperature & Humidity</p>
-                    <div className="flex gap-2 items-end font-semibold">
-                        <p className="text-2xl">{ snapshot?.air.temperature }°C</p>
-                        <p className="text-sm font-medium opacity-80">{ snapshot?.air.humidity }% humidity</p>
-                    </div>
-                    { snapshot && <LiveStatusIndicator lastUpdated={snapshot.updatedAt} /> }
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent className="px-6 gap-2">
-                    <div className="gap-1">
-                        <p className="text-sm text-muted-foreground mb-1">Soild Moisture</p>
-                        <div className="text-2xl font-semibold">{ snapshot?.soil.moisture }%</div>
-                    </div>
-                    { snapshot && <LiveStatusIndicator lastUpdated={snapshot.updatedAt} /> }
-                </CardContent>
-            </Card>
+            <HealthCard health={health} loading={healthLoading} />
+            <DashboardCard 
+                name="Temperature"
+                Icon={ThermometerSun}
+                value={ snapshot?.air.temperature ?? 0 }
+                unit={"°C"}
+                lastUpdated={snapshot?.updatedAt}
+                loading={snapshotLoading}
+            />
+            <DashboardCard 
+                name="Soil Moisture"
+                Icon={Droplets}
+                value={ snapshot?.soil.moisture ?? 0 }
+                unit={"%"}
+                lastUpdated={snapshot?.updatedAt}
+                loading={snapshotLoading}
+            />
         </div>
-        <div>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Soil Moisture</CardTitle>
-                    <CardDescription>Showing average moisture for the last 6 months</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <DashboardChart data={chartData} />
-                </CardContent>
-                
-            </Card>
-        </div>
+
     </div>
 }
 
 export default Dashboard
 
-function LiveStatusIndicator({ lastUpdated }: {
-    lastUpdated: Date
+function HealthCard({ health, loading }: {
+    health: IHealth|null,
+    loading: boolean
 }){
-    const liveWindowM = 10
-    if(lastUpdated >= new Date(Date.now() - liveWindowM * 60_000))
-        return <div className="flex items-center gap-1 mt-1">
-            <Radio size={16} color={"#4CBB17"} />
-            <p className="text-xs text-[#4CBB17]">Live</p>
-        </div>
-    
-    return <div className="flex items-center gap-1 mt-1">
-        <Radio size={16} color={"#f33131"} />
-        <p className="text-xs text-muted-foreground">{ formatTimeElapsedString(lastUpdated) }</p>
-    </div>
+
+    if(!health) return null;
+
+    const statusColor = useMemo(() => {
+        if(health.status === "critical") return "#f33131";
+        if(health.status === "degraded") return "#ff4d00";
+        return "#4cbb17"
+    }, [health.status])
+
+    return <DashboardCard 
+            value={ health.overallHealth ?? 0 }
+            unit={"/ 100"}
+            loading={loading}
+            Header={<div className="flex w-full items-center justify-between">
+                <div className="flex items-center gap-1">
+                    <HeartPulse size={18} />
+                    <p>Health</p>
+                </div>
+                <Tooltip>
+                    <TooltipTrigger><Info size={16} /></TooltipTrigger>
+                    <TooltipContent>Show health</TooltipContent>
+                </Tooltip>
+            </div>}
+            Footer={<p className={`text-xs uppercase font-medium text-[${statusColor}]`}>{ health.status }</p>}
+        />
 }
