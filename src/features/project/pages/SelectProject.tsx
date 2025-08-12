@@ -1,10 +1,10 @@
 import { Suspense, useEffect, useState } from "react";
-import ProjectsSkeleton from "../components/ProjectsSkeleton";
+import ProjectsSkeleton from "../components/selector/ProjectsSkeleton";
 import { useLocation, useNavigate } from "react-router";
 import { useProjects } from "@/features/project/hooks/useProjects";
 import type { IProject } from "@/types/project";
-import NewProjectSheet from "../components/NewProjectSheet";
-import { ProjectList } from "../components/ProjectList";
+import NewProjectSheet from "../components/selector/NewProjectSheet";
+import { ProjectList } from "../components/selector/ProjectList";
 
 function SelectProject() {
     return <div className="flex flex-col p-4 bg-accent h-full min-h-screen">

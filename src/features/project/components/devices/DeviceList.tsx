@@ -16,8 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { IAPIKey } from "@/types/apikey";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
-import { deleteDevice, updateDevice } from "../services/device";
-import { deleteAPIKey, getAPIKey, registerAPIKey } from "../services/apikey";
+import { deleteDevice, updateDevice } from "../../services/device";
+import { deleteAPIKey, getAPIKey, registerAPIKey } from "../../services/apikey";
 
 export const DeviceList = ({ devices, loading, updateDevice, deleteDevice }: {
     devices: IDevice[];

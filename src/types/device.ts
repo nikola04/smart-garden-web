@@ -7,9 +7,10 @@ export type DeviceType = keyof typeof DeviceType
 
 export interface IDevice {
     id: string,
+    userId: string,
     name: string,
     type: DeviceType,
     isActive: boolean,
-    addedAt: Date,
-    userId: string
+    lastActive: Date,
+    addedAt: Date
 }

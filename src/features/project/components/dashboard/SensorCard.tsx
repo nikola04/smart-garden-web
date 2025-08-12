@@ -2,23 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatTimeElapsedString } from "@/utils/date";
 import { Radio, type LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
 
-export function DashboardCard({ name, Icon, value, unit, lastUpdated, Header, Footer, loading }: {
+export function SensorCard({ name, Icon, value, unit, lastUpdated, loading }: {
     name?: string;
     Icon?: LucideIcon;
     value: number;
     unit: string;
     lastUpdated?: Date|undefined;
-    Header?: ReactNode;
-    Footer?: ReactNode;
     loading: boolean;
 }){
     if(loading)
         return <Card>
             <CardContent className="flex flex-col gap-2 px-6">
                 <Skeleton className="h-4 w-20 mb-1" />
-                <Skeleton className="h-10 w-24 font-semibold" />
+                <Skeleton className="h-8 w-24" />
                 <div className="flex items-center gap-1 mt-1">
                     <Skeleton className="h-4 w-24" />
                 </div>
@@ -28,7 +25,6 @@ export function DashboardCard({ name, Icon, value, unit, lastUpdated, Header, Fo
     return <Card>
         <CardContent className="flex flex-col gap-2 px-6">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                { Header }
                 { Icon && <Icon size={18} /> }
                 <p>{ name }</p>
             </div>
@@ -40,7 +36,6 @@ export function DashboardCard({ name, Icon, value, unit, lastUpdated, Header, Fo
             </div>
             <div className="flex items-center gap-1 mt-1">
             { lastUpdated && <LiveStatusIndicator lastUpdated={lastUpdated} /> }
-            { Footer }
             </div>
         </CardContent>
     </Card>

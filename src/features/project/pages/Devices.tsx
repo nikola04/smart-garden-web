@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { isValidDeviceName } from "@/validators/device";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DeviceList } from "../components/DeviceList";
+import { DeviceList } from "../components/devices/DeviceList";
 import { createDevice } from "../services/device";
 
 function Devices() {
@@ -26,11 +26,11 @@ function Devices() {
     const addDevice = useCallback((device: IDevice) => setDevices(prev => [...prev, device]), [setDevices]);
 
     return <div className="flex flex-col p-4">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-lg font-bold">My Devices</h1>
-                    <p className="font-light text-sm">All devices that you have added.</p>
+                    <p className="font-semibold text-foreground/90">My Devices</p>
+                    <p className="font-light text-sm text-foreground/60">All devices that you have added.</p>
                 </div>
                 <CreateDeviceDialog onCreate={addDevice} projectId={projectId}>
                     <Button><Plus />New</Button>

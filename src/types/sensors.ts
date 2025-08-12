@@ -8,9 +8,15 @@ export interface ISoil{
     sensors_used: number;
 }
 
+export interface ILight{
+    value: number;
+    night: boolean;
+}
+
 export interface IAggregatedSensorSnapshot {
     air: IAir;
     soil: ISoil;
+    light: ILight;
     basedOnReports: number;
     timeWindowMinutes: number;
     updatedAt: Date;
