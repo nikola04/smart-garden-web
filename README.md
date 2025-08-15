@@ -19,3 +19,8 @@ React, TypeScript, TailwindCSS...
 #### API Server:
   - Managing user projects, Project Devices, Authorization, Analythic Data...
   - [github.com/nikola04/smart-garden-api](https://github.com/nikola04/smart-garden-api)
+
+
+## Screenshots:
+
+![https://i.imgur.com/8GQoSOt.png](https://i.imgur.com/8GQoSOt.png)
