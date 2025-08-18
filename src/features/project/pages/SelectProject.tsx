@@ -7,7 +7,7 @@ import NewProjectSheet from "../components/selector/NewProjectSheet";
 import { ProjectList } from "../components/selector/ProjectList";
 
 function SelectProject() {
-    return <div className="flex flex-col p-4 bg-accent h-full min-h-screen">
+    return <div className="flex flex-col p-4 h-full min-h-screen">
         <div className="pb-8">
             <div className="container mx-auto mt-8">
                 <div className="flex flex-col gap-2 mb-8">

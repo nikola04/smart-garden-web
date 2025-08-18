@@ -1,10 +1,11 @@
 import type { HTMLAttributes, PropsWithChildren } from "react";
 
-export function CircleProgress({ size = 100, strokeWidth = 10, progress, color = "#4f46e5", bgColor = "#e5e7eb", children, style, ...props }: {
+export function CircleProgress({ size = 100, strokeWidth = 10, progress, color, bgColor = "transparent", innerColor, children, style, ...props }: {
   size?: number;
   strokeWidth?: number;
   progress: number;
-  color?: string;
+  color: string;
+  innerColor: string;
   bgColor?: string;
 } & PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
   return (
@@ -20,7 +21,7 @@ export function CircleProgress({ size = 100, strokeWidth = 10, progress, color =
     >
       <div
         style={{
-          background: "white",
+          background: innerColor,
           borderRadius: "50%",
           width: "100%",
           height: "100%",

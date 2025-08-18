@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DeviceList } from "../components/devices/DeviceList";
 import { createDevice } from "../services/device";
+import ProjectSection from "../components/ProjectSection";
 
 function Devices() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -25,17 +26,14 @@ function Devices() {
     ), [setDevices])
     const addDevice = useCallback((device: IDevice) => setDevices(prev => [...prev, device]), [setDevices]);
 
-    return <div className="flex flex-col p-4">
-        <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-                <div>
-                    <p className="font-semibold text-foreground/90">My Devices</p>
-                    <p className="font-light text-sm text-foreground/60">All devices that you have added.</p>
-                </div>
-                <CreateDeviceDialog onCreate={addDevice} projectId={projectId}>
-                    <Button><Plus />New</Button>
-                </CreateDeviceDialog>
-            </div>
+    return <div className="flex flex-col gap-8 p-4">
+        <ProjectSection 
+            title="My Devices"
+            description="All devices that you have added." 
+            Header={<CreateDeviceDialog onCreate={addDevice} projectId={projectId}>
+                <Button><Plus />New</Button>
+            </CreateDeviceDialog>}
+        >
             <DeviceList devices={devices} loading={loading} updateDevice={updateDevice} deleteDevice={deleteDevice} />
             { !loading && devices.length == 0 && <div className="flex items-center gap-2 font-light text-md">
                 <span>You have no devices. Add new one by clicking on </span>
@@ -44,7 +42,7 @@ function Devices() {
                 </CreateDeviceDialog>
                 <span>button.</span>
             </div>}
-        </div>
+        </ProjectSection>
     </div>
 }
 
@@ -82,17 +80,17 @@ const CreateDeviceDialog = ({ children, onCreate, projectId }: {
             </DialogHeader>
             <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">Name</Label>
-                    <Input id="name" className="col-span-3" placeholder="My controller" value={name} onChange={e => setName(e.target.value)} />
+                    <Label htmlFor="name" className="text-right text-foreground font-medium">Name</Label>
+                    <Input id="name" className="col-span-3 text-muted-foreground font-light" placeholder="My controller" value={name} onChange={e => setName(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="username" className="text-right">Type</Label>
+                    <Label htmlFor="username" className="text-right text-foreground font-medium">Type</Label>
                     <Select value={type} onValueChange={(value) => setType(value as DeviceType)}>
                         <SelectTrigger id="device-type">
                             <SelectValue placeholder="Select a type" />
                         </SelectTrigger>
                         <SelectContent>
-                            { Object.values(DeviceType).map((value, key) => <SelectItem key={key} value={value}>{value}</SelectItem> )}
+                            { Object.values(DeviceType).map((value, key) => <SelectItem className="text-muted-foreground" key={key} value={value}>{value}</SelectItem> )}
                         </SelectContent>
                     </Select>                
                 </div>

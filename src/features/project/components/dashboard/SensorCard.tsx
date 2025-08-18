@@ -26,7 +26,7 @@ export function SensorCard({ name, Icon, value, unit, lastUpdated, loading }: {
         <CardContent className="flex flex-col gap-2 px-6">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 { Icon && <Icon size={18} /> }
-                <p>{ name }</p>
+                <p className="font-light">{ name }</p>
             </div>
             <div className="flex gap-2 items-end font-semibold">
                 <p className="text-2xl">
@@ -53,6 +53,6 @@ function LiveStatusIndicator({ lastUpdated }: {
     
     return <>
         <Radio size={16} color={"#f33131"} />
-        <p className="text-xs text-muted-foreground">{ formatTimeElapsedString(lastUpdated) }</p>
+        <p className="font-light text-xs text-muted-foreground">{ formatTimeElapsedString(lastUpdated) }</p>
     </>
 }

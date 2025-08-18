@@ -61,8 +61,8 @@ function CustomSidebarGroup({ title, items }: {
                 <SidebarMenuButton
                     asChild
                     isActive={pathname === item.url}
-                >
-                    <Link to={item.url}>
+                    >
+                    <Link className="font-light" to={item.url}>
                         <item.icon />
                         <span>{ item.title }</span>
                     </Link>

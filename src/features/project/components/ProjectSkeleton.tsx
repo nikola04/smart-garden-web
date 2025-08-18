@@ -15,7 +15,7 @@ function Skeleton({ className, ...props }: React.ComponentProps<"div">){
 }
 
 function AppSidebarSkeleton() {
-    return <Sidebar variant="inset">
+    return <Sidebar variant="sidebar" className="border-none shadow-none rounded-r-lg overflow-hidden">
         <SidebarHeader>
             <div className="p-2">
                 <Skeleton className="h-9 w-full" />

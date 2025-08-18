@@ -45,14 +45,15 @@ export default function HealthCard({ health, loading }: {
                 <CircleProgress 
                     strokeWidth={14}
                     bgColor="var(--background-alt)"
+                    innerColor="var(--card)"
                     color={statusColor}
                     progress={health.overallHealth}
                     className="flex items-center justify-center" >
                     <p className="font-semibold">{healthString}</p>
                 </CircleProgress>
                 <div className="flex flex-col items-center justify-center">
-                    <p className="text-xs text-center uppercase font-medium" style={{ color: statusColor }}>{ health.status }</p>
-                    <p className="text-xs text-center text-muted-foreground">overall score</p>
+                    <p className="font-medium text-xs text-center uppercase" style={{ color: statusColor }}>{ health.status }</p>
+                    <p className="font-light text-xs text-center text-muted-foreground">overall score</p>
                 </div>
             </div>
             <WarnMessages warnings={warnings} />
@@ -81,7 +82,7 @@ function WarnMessages({ warnings }: {
     warnings: Warnings[]
 }){
     if(warnings.length === 0 || warnings.every(warns => warns.messages.length === 0))
-        return <p className="py-2 text-sm text-muted-foreground">No warnings.</p>;
+        return <p className="py-2 font-light text-sm text-muted-foreground">No warnings.</p>;
 
     return <div className="flex flex-col md:flex-row gap-8 py-2">
         { warnings.map((warns, ind) => <WarnMessage key={ind} title={warns.title} messages={warns.messages} />) }
@@ -106,11 +107,11 @@ function WarnMessage({ title, messages }: {
     return <div className="flex flex-col items-center md:items-start gap-2">
         <div className="flex gap-1 items-center">
             <TriangleAlert size={14} color="var(--warning)" />
-            <p className="text-sm" style={{ color: 'var(--warning)'}}>{ title }</p>
+            <p className="font-normal text-sm" style={{ color: 'var(--warning)'}}>{ title }</p>
         </div>
         <div>
             { messagesPreview.map((message, ind) => <div key={ind}>
-                <p className="text-muted-foreground text-sm text-center md:text-left">
+                <p className="font-light text-muted-foreground text-sm text-center md:text-left">
                     <span>{ message.name } is { message.state }!</span>
                 </p>
             </div>)}

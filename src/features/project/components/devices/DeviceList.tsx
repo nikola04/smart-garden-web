@@ -56,8 +56,8 @@ const DeviceCard = ({ device, onUpdate, onDelete }: {
             </div>
         </CardHeader>
         <CardContent>
-            <p className="text-sm text-muted-foreground">Type: {device.type}</p>
-            <p className="text-sm text-muted-foreground">Added: {formatDate(device.addedAt)}</p>
+            <p className="text-xs font-light text-muted-foreground">Type: {device.type}</p>
+            <p className=" text-xs font-light text-muted-foreground">Added: {formatDate(device.addedAt)}</p>
         </CardContent>
     </Card>
 }
@@ -124,26 +124,26 @@ const DeviceSheet = ({ device, onUpdate, onDelete }: {
                 <div className="space-y-6 mt-4">
                     <div className="flex flex-col gap-2">
                         <p className="text-sm font-medium">ID</p>
-                        <p className="text-sm font-thin">{device.id}</p>
+                        <p className="text-sm font-light">{device.id}</p>
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <label htmlFor="device-name" className="text-sm font-medium">Device Name</label>
-                        <Input id="device-name" value={_name} onChange={(e) => setName(e.target.value)} />
+                        <label htmlFor="device-name" className="text-foreground text-sm font-medium">Device Name</label>
+                        <Input id="device-name" value={_name} className="text-muted-foreground" onChange={(e) => setName(e.target.value)} />
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <label htmlFor="device-type" className="text-sm font-medium">Device Type</label>
+                        <label htmlFor="device-type" className="text-sm text-foreground font-medium">Device Type</label>
                         <Select value={type} onValueChange={(value) => setType(value as typeof device.type)}>
                             <SelectTrigger id="device-type">
                                 <SelectValue placeholder="Select a type" />
                             </SelectTrigger>
                             <SelectContent>
-                                { Object.values(EDeviceType).map((value, key) => <SelectItem key={key} value={value}>{value}</SelectItem> )}
+                                { Object.values(EDeviceType).map((value, key) => <SelectItem className="text-muted-foreground" key={key} value={value}>{value}</SelectItem> )}
                             </SelectContent>
                         </Select>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <p className="text-sm font-medium">Added</p>
-                        <p className="text-sm font-thin">{device.addedAt.toDateString()}</p>
+                        <p className="text-sm font-medium text-foreground">Added</p>
+                        <p className="text-sm font-light text-muted-foreground">{device.addedAt.toDateString()}</p>
                     </div>
                 </div>
                 <div className="flex justify-between mt-6 gap-2">

@@ -8,6 +8,7 @@ import GoogleCallback from "@/features/auth/pages/GoogleCallback";
 import ProjectLayout from "@/features/project/layouts/ProjectLayout";
 import Devices from "@/features/project/pages/Devices";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import Settings from "@/features/project/pages/Settings";
 
 export const router = createBrowserRouter([{
     path: '/',
@@ -44,6 +45,9 @@ export const router = createBrowserRouter([{
             }, {
                 path: 'dashboard',
                 Component: Dashboard
+            }, {
+                path: 'settings',
+                Component: Settings
             }, {
                 path: 'devices',
                 Component: Devices
